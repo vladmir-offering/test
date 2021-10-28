@@ -1,0 +1,39 @@
+volumes:
+  postgresql:
+services:
+  db:
+    environment:
+      POSTGRES_DB: selectel
+      POSTGRES_PASSWORD: selectel
+      POSTGRES_USER: selectel
+    image: postgres
+    ports:
+    - 5432:5432/tcp
+    restart: always
+    volumes:
+    - postgresql:/var/lib/postgresql/data:rw
+  app:
+    depends_on:
+    - db
+    restart: always
+    build: .
+    ports:
+    - "3000:3000" 
+  server:
+    depends_on:
+    - app
+    restart: always
+    volumes:
+    - ./nginx:/etc/nginx/conf.d
+    ports:
+    - "80:80"
+    image: nginx
+    links:
+    - app
+version: '2.1'
+#docker-compose up -d
+#apk add postgresql-client
+#psql -U selectel -d selectel -h localhost
+    
+  
+
